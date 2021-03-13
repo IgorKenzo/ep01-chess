@@ -9,6 +9,15 @@ pieceValue = {
     chess.KING : 20000
 }
 
+pieceName = {
+    chess.PAWN : "peao",
+    chess.KNIGHT : "cav",
+    chess.BISHOP : "bispo",
+    chess.ROOK : "torre",
+    chess.QUEEN : "rain",
+    chess.KING : "rei"
+}
+
 # Aplicando o
 #https://www.chessprogramming.org/Simplified_Evaluation_Function
 # Pawn evaluation table
@@ -25,7 +34,8 @@ whitePawnTable = [
 blackPawnTable = [-x for x in whitePawnTable]
 
  # knight
-whiteKnightTable = [-50,-40,-30,-30,-30,-30,-40,-50,
+whiteKnightTable = [
+-50,-40,-30,-30,-30,-30,-40,-50,
 -40,-20,  0,  0,  0,  0,-20,-40,
 -30,  0, 10, 15, 15, 10,  0,-30,
 -30,  5, 15, 20, 20, 15,  5,-30,
@@ -116,22 +126,47 @@ def applyOnTable(piece, color, index):
         
     
 
-def evaluate(board):
-    pieceSumWhite = 0
-    pieceSumBlack = 0
+# def evaluate(board, colorAI):
+#     pieceSumAI = 0
+#     pieceSumPlayer = 0
 
+#     for piece in pieceValue:
+#         aiPieces = board.pieces(piece, colorAI)
+#         for p in aiPieces:
+#             pieceSumAI += pieceValue[piece] + applyOnTable(piece, colorAI, chess.square_mirror(p))
+        
+#         playerPieces = board.pieces(piece, not colorAI)
+#         for p in playerPieces:
+#             pieceSumPlayer += -pieceValue[piece] + applyOnTable(piece, not colorAI, p)
+
+#     print(pieceSumAI , pieceSumPlayer)
+#     return pieceSumAI + pieceSumPlayer
+        
+def evaluate(board, colorAI):
+    pieceSumAI = 0
+    pieceSumPlayer = 0
     for piece in pieceValue:
-        white = board.pieces(piece, chess.WHITE)
-        for p in white:
-            pieceSumWhite += pieceValue[piece] + applyOnTable(piece, chess.WHITE, chess.square_mirror(p))
-        
-        black = board.pieces(piece, chess.BLACK)
-        for p in black:
-            pieceSumBlack += -pieceValue[piece] + applyOnTable(piece, chess.BLACK, p)
+        aiPieces = board.pieces(piece, colorAI)
+        testeA = 0
+        for p in aiPieces:
+            testeA += pieceValue[piece] + applyOnTable(piece, colorAI, chess.square_mirror(p))
+            #print(testeA)
+        pieceSumAI += testeA
 
-    print(pieceSumWhite, pieceSumBlack)
-        
 
+        #print(f'Peça: {pieceName[piece]}. AI: {testeA} SOMA: {pieceSumAI}')
+        
+        playerPieces = board.pieces(piece, not colorAI)
+        testeB = 0
+        for p in playerPieces:
+            #print(-pieceValue[piece], applyOnTable(piece, not colorAI, p))
+            testeB += -pieceValue[piece] + applyOnTable(piece, not colorAI, p)
+        pieceSumPlayer += testeB
+        
+        #print(f'Peça: {pieceName[piece]}. Player: {testeB}')
+
+    #print(pieceSumAI , pieceSumPlayer)
+    return pieceSumAI + pieceSumPlayer
 
 
 #And of course "These values are for white, for black I use mirrored values."
