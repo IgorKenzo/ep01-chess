@@ -43,7 +43,7 @@ if __name__ == "__main__":
 
     while not jogo.board.is_game_over():
 
-        print(jogo.board.unicode())
+        print(jogo.board)
 
         humano = lerJogada(list(jogo.board.legal_moves))
         jogo = jogo.jogar(humano)
@@ -54,7 +54,7 @@ if __name__ == "__main__":
         elif jogo.empate():
             print("Empate!")
             break
-        computador = melhor_jogada_agente_poda(jogo,3)
+        computador = melhor_jogada_agente_poda(jogo)
         print(f"Jogada do Computador é {computador}")
         jogo = jogo.jogar(computador.uci())
         
