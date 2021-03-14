@@ -3,7 +3,7 @@ from pieces import pieceValue
 import random
 import evaluation as ev
 from jogo import Jogo,Jogador
-from minimax import melhor_jogada_agente_poda
+from minimax import melhor_jogada_agente_poda,melhor_jogada_agente
 
 
 class Game(Jogo):
@@ -28,8 +28,9 @@ class Game(Jogo):
     def empate(self):
         return self.board.is_stalemate() or self.board.is_insufficient_material() or self.board.is_fivefold_repetition() or self.board.is_seventyfive_moves()
 
-    def avaliar(self, player):
-        return ev.evaluate(self.board, not player)
+    def avaliar(self):
+        ev.contadorGlobal += 1
+        return ev.evaluate(self.board, not self.playerColor)
 
 
 def lerJogada(legalMovesList):
@@ -39,7 +40,7 @@ def lerJogada(legalMovesList):
 
 if __name__ == "__main__":
     player = int(input("0 pra preto, 1 pra branco: "))
-    jogo = Game(chess.Board(),player)
+    jogo = Game(chess.Board("2b1k2r/R4ppp/8/3p4/3P4/3P1P2/4n1KP/8 w k - 0 31"),player)
 
     while not jogo.board.is_game_over():
 
@@ -47,15 +48,16 @@ if __name__ == "__main__":
 
         humano = lerJogada(list(jogo.board.legal_moves))
         jogo = jogo.jogar(humano)
-        print("a")
         if jogo.venceu():
             print("Humano Venceu!")
             break
         elif jogo.empate():
             print("Empate!")
             break
-        computador = melhor_jogada_agente_poda(jogo)
+        computador = melhor_jogada_agente_poda(jogo,3)
+        #computador = melhor_jogada_agente(jogo,0)
         print(f"Jogada do Computador é {computador}")
+        print(ev.contadorGlobal)
         jogo = jogo.jogar(computador.uci())
         
         if jogo.venceu():

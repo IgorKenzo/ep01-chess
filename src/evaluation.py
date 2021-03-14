@@ -141,10 +141,18 @@ def applyOnTable(piece, color, index):
 
 #     print(pieceSumAI , pieceSumPlayer)
 #     return pieceSumAI + pieceSumPlayer
-        
+contadorGlobal = 0
 def evaluate(board, colorAI):
     pieceSumAI = 0
     pieceSumPlayer = 0
+
+    if (board.is_checkmate()):
+        txt = board.result().split("-")
+        if (txt[0] == colorAI):
+            return 1000000#float("inf")
+        else:
+            return -1000000#float("-inf")
+
     for piece in pieceValue:
         aiPieces = board.pieces(piece, colorAI)
         testeA = 0
