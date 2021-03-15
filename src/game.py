@@ -29,43 +29,119 @@ class Game(Jogo):
         return self.board.is_stalemate() or self.board.is_insufficient_material() or self.board.is_fivefold_repetition() or self.board.is_seventyfive_moves()
 
     def avaliar(self):
-        ev.contadorGlobal += 1
         return ev.evaluate(self.board, not self.playerColor)
+        # return ev.evaluate(self.board, not self.turno())
 
 
 def lerJogada(legalMovesList):
-    print(legalMovesList)
-    mov = input("Digite uma jogada: ")
-    return mov
+    while True:
+        legalMoves = []
+        for move in legalMovesList:
+            legalMoves.append(move.uci())
+        print(legalMoves)
+        mov = input("Digite uma jogada: ")
+        if mov in legalMoves:
+            return mov
+
 
 if __name__ == "__main__":
     player = int(input("0 pra preto, 1 pra branco: "))
-    jogo = Game(chess.Board("2b1k2r/R4ppp/8/3p4/3P4/3P1P2/4n1KP/8 w k - 0 31"),player)
+    jogo = Game(chess.Board(),player)
 
     while not jogo.board.is_game_over():
+        if jogo.board.turn == player:
+            print(jogo.board)
+            humano = lerJogada(list(jogo.board.legal_moves))
+            jogo = jogo.jogar(humano)
+            if jogo.venceu():
+                print("Humano Venceu!")
+                break
+            elif jogo.empate():
+                print("Empate!")
+                break
+        else:    
+            computador = melhor_jogada_agente_poda(jogo,2)
+            print(f"Jogada do Computador é {computador}")
+            jogo = jogo.jogar(computador.uci())
+            
+            if jogo.venceu():
+                print("Computador venceu!")
+                break
+            elif jogo.empate():
+                print("Empate!")
+                break
 
-        print(jogo.board)
+    print(jogo.board)
 
-        humano = lerJogada(list(jogo.board.legal_moves))
-        jogo = jogo.jogar(humano)
-        if jogo.venceu():
-            print("Humano Venceu!")
-            break
-        elif jogo.empate():
-            print("Empate!")
-            break
-        computador = melhor_jogada_agente_poda(jogo,3)
-        #computador = melhor_jogada_agente(jogo,0)
-        print(f"Jogada do Computador é {computador}")
-        print(ev.contadorGlobal)
-        jogo = jogo.jogar(computador.uci())
-        
-        if jogo.venceu():
-            print("Computador venceu!")
-            break
-        elif jogo.empate():
-            print("Empate!")
-            break
+
+# if __name__ == "__main__":
+#     player = int(input("0 pra preto, 1 pra branco: "))
+#     jogo = Game(chess.Board(),player)
+
+#     while not jogo.board.is_game_over():
+#         if jogo.board.turn == player:
+#             print(jogo.board)
+#             IA = melhor_jogada_agente_poda(jogo,1)
+#             print(f"Jogada da IA é {IA.uci()}")
+#             jogo = jogo.jogar(IA.uci())
+#             if jogo.venceu():
+#                 print("IA Venceu!")
+#                 break
+#             elif jogo.empate():
+#                 print("Empate!")
+#                 break
+#         else:    
+#             print(jogo.board)
+#             AI = melhor_jogada_agente_poda(jogo,1)
+#             print(f"Jogada do AI é {AI.uci()}")
+#             jogo = jogo.jogar(AI.uci())
+#             if jogo.venceu():
+#                 print("AI venceu!")
+#                 break
+#             elif jogo.empate():
+#                 print("Empate!")
+#                 break
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # board = chess.Board(fen="4k3/p5pp/2p5/8/8/r7/5r2/3K4 b - - 11 35")
 # ev.evaluate(board)

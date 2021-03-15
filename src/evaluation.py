@@ -9,6 +9,15 @@ pieceValue = {
     chess.KING : 20000
 }
 
+pieceValue2 = {
+    chess.PAWN : 10,
+    chess.KNIGHT : 30,
+    chess.BISHOP : 30,
+    chess.ROOK : 50,
+    chess.QUEEN : 90,
+    chess.KING : 900
+}
+
 pieceName = {
     chess.PAWN : "peao",
     chess.KNIGHT : "cav",
@@ -124,24 +133,6 @@ def applyOnTable(piece, color, index):
     if piece == chess.KING:
         return whiteKingMidGameTable[index] if color == chess.WHITE else blackKingMidGameTable[index]
         
-    
-
-# def evaluate(board, colorAI):
-#     pieceSumAI = 0
-#     pieceSumPlayer = 0
-
-#     for piece in pieceValue:
-#         aiPieces = board.pieces(piece, colorAI)
-#         for p in aiPieces:
-#             pieceSumAI += pieceValue[piece] + applyOnTable(piece, colorAI, chess.square_mirror(p))
-        
-#         playerPieces = board.pieces(piece, not colorAI)
-#         for p in playerPieces:
-#             pieceSumPlayer += -pieceValue[piece] + applyOnTable(piece, not colorAI, p)
-
-#     print(pieceSumAI , pieceSumPlayer)
-#     return pieceSumAI + pieceSumPlayer
-contadorGlobal = 0
 def evaluate(board, colorAI):
     pieceSumAI = 0
     pieceSumPlayer = 0
@@ -176,6 +167,18 @@ def evaluate(board, colorAI):
     #print(pieceSumAI , pieceSumPlayer)
     return pieceSumAI + pieceSumPlayer
 
+# def evaluate2(board, colorAI):
+#     total = 0
+#     for piece in pieceValue:
+#         aiPieces = board.pieces(piece, colorAI)
+#         for p in aiPieces:
+#             valor = pieceValue2[piece]
+#             total += valor
+#         playerPieces = board.pieces(piece, not colorAI)
+#         for p in playerPieces:
+#             valor = pieceValue2[piece]
+#             total -= valor
+#     return total
 
 #And of course "These values are for white, for black I use mirrored values."
 '''

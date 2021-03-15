@@ -37,32 +37,54 @@ def minimax(jogo, turno_max, jogador, profundidade_maxima = 8):
 #           board.pop()
 #       return value
 
+# def minimax_alfabeta(jogo, turno_max, jogador, profundidade_maxima = 8, alfa = float("-inf"), beta = float("inf")):
+#   # se o jogo acabou ou se a profundidade é máxima
+#   if jogo.venceu() or jogo.empate() or profundidade_maxima == 0:
+#     return jogo.avaliar2()
+
+#   if turno_max: # turno do MAX
+#     for proximo_jogo in jogo.jogos_validos():
+#       utilidade = minimax_alfabeta(jogo.jogar(proximo_jogo.uci()), False, jogador, profundidade_maxima - 1, alfa, beta)
+#       alfa = max(utilidade, alfa)
+#       if beta <= alfa:
+#         break
+#     return alfa
+#   else: # turno no MIN
+#     for proximo_jogo in jogo.jogos_validos():
+#       utilidade = minimax_alfabeta(jogo.jogar(proximo_jogo.uci()), True, jogador, profundidade_maxima - 1, alfa, beta)
+#       beta = min(utilidade, beta)
+#       if beta <= alfa:
+#         break
+#     return beta
+
 def minimax_alfabeta(jogo, turno_max, jogador, profundidade_maxima = 8, alfa = float("-inf"), beta = float("inf")):
   # se o jogo acabou ou se a profundidade é máxima
   if jogo.venceu() or jogo.empate() or profundidade_maxima == 0:
     return jogo.avaliar()
 
   if turno_max: # turno do MAX
+    utilidade = float("-inf")
     for proximo_jogo in jogo.jogos_validos():
-      utilidade = minimax_alfabeta(jogo.jogar(proximo_jogo.uci()), False, jogador, profundidade_maxima - 1, alfa, beta)
+      utilidade = max(utilidade, minimax_alfabeta(jogo.jogar(proximo_jogo.uci()), False, jogador, profundidade_maxima - 1, alfa, beta))
       alfa = max(utilidade, alfa)
       if beta <= alfa:
-        break
-      return alfa
+        return utilidade
+    return utilidade
   else: # turno no MIN
+    utilidade = float("inf")
     for proximo_jogo in jogo.jogos_validos():
-      utilidade = minimax_alfabeta(jogo.jogar(proximo_jogo.uci()), True, jogador, profundidade_maxima - 1, alfa, beta)
+      utilidade = min(utilidade, minimax_alfabeta(jogo.jogar(proximo_jogo.uci()), True, jogador, profundidade_maxima - 1, alfa, beta))
       beta = min(utilidade, beta)
       if beta <= alfa:
-        break
-      return beta
+        return utilidade
+    return utilidade
 
 # Encotrar o melhor movimento do computador
 def melhor_jogada_agente(jogo, profundidade_maxima = 8):
   melhor_valor = float("-inf")
   melhor_jogada = -1
   for proximo_jogo in jogo.jogos_validos():
-    utilidade = minimax(jogo.jogar(proximo_jogo.uci()), True, jogo.turno(), profundidade_maxima)
+    utilidade = minimax(jogo.jogar(proximo_jogo.uci()), False, jogo.turno(), profundidade_maxima)
     #utilidade = minimax(jogo.board, profundidade_maxima, False)
     if utilidade > melhor_valor:
       melhor_valor = utilidade
@@ -72,11 +94,20 @@ def melhor_jogada_agente(jogo, profundidade_maxima = 8):
 def melhor_jogada_agente_poda(jogo, profundidade_maxima = 8):
   melhor_valor = float("-inf")
   melhor_jogada = -1
-  print(len(jogo.jogos_validos()))
+  # print(len(jogo.jogos_validos()))
   for proximo_jogo in jogo.jogos_validos():
     utilidade = minimax_alfabeta(jogo.jogar(proximo_jogo.uci()), False, jogo.turno(), profundidade_maxima)
-    print(utilidade)
+    # print(utilidade)
     if utilidade > melhor_valor:
       melhor_valor = utilidade
       melhor_jogada = proximo_jogo
   return melhor_jogada
+
+
+
+
+
+
+
+
+
