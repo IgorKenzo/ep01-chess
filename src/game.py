@@ -7,7 +7,8 @@ from minimax import melhor_jogada_agente_poda,melhor_jogada_agente
 
 
 class Game(Jogo):
-    def __init__(self, board, playerColor):
+    def __init__(self, board, playerColor, prim5jogadas = []):
+        self.primeiras5Jogadas = prim5jogadas
         self.board = board
         self.playerColor = playerColor
 
@@ -17,7 +18,7 @@ class Game(Jogo):
     def jogar(self, localizacao):
         aux = self.board.copy()
         aux.push(chess.Move.from_uci(localizacao))
-        return Game(chess.Board(aux.fen()), self.playerColor)
+        return Game(chess.Board(aux.fen()), self.playerColor, self.primeiras5Jogadas)
 
     def jogos_validos(self):
         return list(self.board.legal_moves)
@@ -32,6 +33,8 @@ class Game(Jogo):
         return ev.evaluate(self.board, not self.playerColor)
         # return ev.evaluate(self.board, not self.turno())
 
+    def registrarAbertura(self, jogada):
+        self.primeiras5Jogadas.append(jogada)
 
 def lerJogada(legalMovesList):
     while True:
@@ -43,7 +46,7 @@ def lerJogada(legalMovesList):
         if mov in legalMoves:
             return mov
 
-
+#JOGO NORMAL
 if __name__ == "__main__":
     player = int(input("0 pra preto, 1 pra branco: "))
     jogo = Game(chess.Board(),player)
@@ -51,8 +54,12 @@ if __name__ == "__main__":
     while not jogo.board.is_game_over():
         if jogo.board.turn == player:
             print(jogo.board)
-            humano = lerJogada(list(jogo.board.legal_moves))
+            humano = lerJogada(list(jogo.board.legal_moves))            
             jogo = jogo.jogar(humano)
+
+            if (len(jogo.primeiras5Jogadas) < 5):
+                jogo.registrarAbertura(humano)
+
             if jogo.venceu():
                 print("Humano Venceu!")
                 break
@@ -63,6 +70,9 @@ if __name__ == "__main__":
             computador = melhor_jogada_agente_poda(jogo,2)
             print(f"Jogada do Computador é {computador}")
             jogo = jogo.jogar(computador.uci())
+
+            if (len(jogo.primeiras5Jogadas) < 5):
+                jogo.registrarAbertura(computador.uci())
             
             if jogo.venceu():
                 print("Computador venceu!")
@@ -73,7 +83,7 @@ if __name__ == "__main__":
 
     print(jogo.board)
 
-
+##BOT X BOT
 # if __name__ == "__main__":
 #     player = int(input("0 pra preto, 1 pra branco: "))
 #     jogo = Game(chess.Board(),player)
@@ -103,7 +113,26 @@ if __name__ == "__main__":
 #                 break
 
 
+# if __name__ == "__main__":
+#     jogo = Game(chess.Board(), True)
 
+#     x = melhor_jogada_agente_poda(jogo, 0)
+#     print(x)
+#     jogo = jogo.jogar(x)
+#     jogo.registrarAbertura(x)
+
+#     humano = lerJogada(list(jogo.board.legal_moves))
+#     jogo = jogo.jogar(humano)
+#     jogo.registrarAbertura(humano)
+
+#     print(jogo.primeiras5Jogadas)
+
+#     x = melhor_jogada_agente_poda(jogo, 0)
+#     print(x)
+#     jogo = jogo.jogar(x)
+#     jogo.registrarAbertura(x)
+
+#     print(jogo.primeiras5Jogadas)
 
 
 
