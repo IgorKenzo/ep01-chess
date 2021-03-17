@@ -130,7 +130,19 @@ whiteKingEndGameTable = [
 
 blackKingEndGameTable = [-x for x in whiteKingEndGameTable]
 
-def applyOnTable(piece, color, index):
+def isEndGame(board):
+    w = board.pieces(chess.QUEEN, chess.WHITE)
+    b = board.pieces(chess.QUEEN, chess.BLACK)
+    if (len(w) == 0 and len(b) == 0):
+        return True
+    elif (len(w) == 0 and len(board.pieces(chess.ROOK, chess.BLACK)) <= 0):
+        return True
+    elif (len(b) == 0 and len(board.pieces(chess.ROOK, chess.WHITE)) <= 0):
+        return True
+    else:
+        return False
+
+def applyOnTable(board, piece, color, index):
     if piece == chess.PAWN:
         return whitePawnTable[index] if color == chess.WHITE else blackPawnTable[index]
     if piece == chess.KNIGHT:
@@ -142,7 +154,11 @@ def applyOnTable(piece, color, index):
     if piece == chess.QUEEN:
         return whiteQueenTable[index] if color == chess.WHITE else blackQueenTable[index]
     if piece == chess.KING:
-        return whiteKingMidGameTable[index] if color == chess.WHITE else blackKingMidGameTable[index]
+        if isEndGame(board):
+            print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+            return whiteKingEndGameTable[index] if color == chess.WHITE else blackKingEndGameTable[index]
+        else:
+            return whiteKingMidGameTable[index] if color == chess.WHITE else blackKingMidGameTable[index]
         
 def evaluate(board, colorAI):
     pieceSumAI = 0
@@ -159,7 +175,7 @@ def evaluate(board, colorAI):
         aiPieces = board.pieces(piece, colorAI)
         testeA = 0
         for p in aiPieces:
-            testeA += pieceValue[piece] + applyOnTable(piece, colorAI, chess.square_mirror(p))
+            testeA += pieceValue[piece] + applyOnTable(board, piece, colorAI, chess.square_mirror(p))
             #print(testeA)
         pieceSumAI += testeA
 
@@ -170,7 +186,7 @@ def evaluate(board, colorAI):
         testeB = 0
         for p in playerPieces:
             #print(-pieceValue[piece], applyOnTable(piece, not colorAI, p))
-            testeB += -pieceValue[piece] + applyOnTable(piece, not colorAI, p)
+            testeB += -pieceValue[piece] + applyOnTable(board, piece, not colorAI, p)
         pieceSumPlayer += testeB
         
         #print(f'Peça: {pieceName[piece]}. Player: {testeB}')

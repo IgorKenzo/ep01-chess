@@ -230,7 +230,8 @@ if __name__ == "__main__":
 
 
 # if __name__ == "__main__":
-#     jogo = Game(chess.Board(), True)
+#     jogo = ChessGame(chess.Board(fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/1NB1KBN1 w kq - 0 1"), True)
+#     print(ev.isEndGame(jogo.board))
 
 #     x = melhor_jogada_agente_poda(jogo, 0)
 #     print(x)
