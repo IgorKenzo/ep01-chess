@@ -1,12 +1,41 @@
 import chess
-from pieces import pieceValue
 import random
+import os
 import evaluation as ev
+from colorama import init, Fore, Back, Style
 from jogo import Jogo,Jogador
 from minimax import melhor_jogada_agente_poda,melhor_jogada_agente
 
+BACKGROUND = {
+    (0, 0) : Back.LIGHTBLACK_EX,
+    (1, 0) : Back.LIGHTCYAN_EX,
+    (0, 1) : Back.LIGHTCYAN_EX,
+    (1, 1) : Back.LIGHTBLACK_EX
+}
 
-class Game(Jogo):
+ELEMENTS = {
+    (chess.KING, 1): f'{Fore.LIGHTWHITE_EX}\u265A',
+    (chess.QUEEN, 1): f'{Fore.LIGHTWHITE_EX}\u265B',
+    (chess.ROOK, 1): f'{Fore.LIGHTWHITE_EX}\u265C',
+    (chess.BISHOP, 1): f'{Fore.LIGHTWHITE_EX}\u265D',
+    (chess.KNIGHT, 1): f'{Fore.LIGHTWHITE_EX}\u265E',
+    (chess.PAWN, 1): f'{Fore.LIGHTWHITE_EX}\u265F',
+    (chess.KING, 0): f'{Fore.BLACK}\u265A',
+    (chess.QUEEN, 0): f'{Fore.BLACK}\u265B',
+    (chess.ROOK, 0): f'{Fore.BLACK}\u265C',
+    (chess.BISHOP, 0): f'{Fore.BLACK}\u265D',
+    (chess.KNIGHT, 0): f'{Fore.BLACK}\u265E',
+    (chess.PAWN, 0): f'{Fore.BLACK}\u265F'
+}
+
+def acharPeca(square):
+    peca = jogo.board.piece_at(square)
+    if peca != None:        
+        return ELEMENTS[peca.piece_type, peca.color]
+    else:
+        return " "
+
+class ChessGame(Jogo):
     def __init__(self, board, playerColor, prim5jogadas = []):
         self.primeiras5Jogadas = prim5jogadas
         self.board = board
@@ -18,7 +47,7 @@ class Game(Jogo):
     def jogar(self, localizacao):
         aux = self.board.copy()
         aux.push(chess.Move.from_uci(localizacao))
-        return Game(chess.Board(aux.fen()), self.playerColor, self.primeiras5Jogadas)
+        return ChessGame(chess.Board(aux.fen()), self.playerColor, self.primeiras5Jogadas)
 
     def jogos_validos(self):
         return list(self.board.legal_moves)
@@ -31,10 +60,21 @@ class Game(Jogo):
 
     def avaliar(self):
         return ev.evaluate(self.board, not self.playerColor)
-        # return ev.evaluate(self.board, not self.turno())
+        #return ev.evaluate(self.board, not self.turno())
 
     def registrarAbertura(self, jogada):
         self.primeiras5Jogadas.append(jogada)
+
+    def tipoEmpate(self):
+        if(self.board.is_stalemate()):
+            return "Stalemate - Afogamento"
+        if(self.board.is_insufficient_material()):
+            return "Insufficient Material - Material Insuficiente"
+        if(self.board.is_fivefold_repetition()):
+            return "Fivefold Repetition - 5 jogadas identicas"
+        if(self.board.is_seventyfive_moves()):
+            return "Seventy Five moves - Muitas jogas sem captura ou movimento de peão"
+        return "Empate"
 
 def lerJogada(legalMovesList):
     while True:
@@ -42,18 +82,36 @@ def lerJogada(legalMovesList):
         for move in legalMovesList:
             legalMoves.append(move.uci())
         print(legalMoves)
-        mov = input("Digite uma jogada: ")
+        mov = input("\nDigite uma jogada: ")
         if mov in legalMoves:
             return mov
+
+def cls():
+    os.system('cls' if os.name=='nt' else 'clear')
 
 #JOGO NORMAL
 if __name__ == "__main__":
     player = int(input("0 pra preto, 1 pra branco: "))
-    jogo = Game(chess.Board(),player)
+    jogo = ChessGame(chess.Board(),player)
+    computador = ""
 
     while not jogo.board.is_game_over():
         if jogo.board.turn == player:
-            print(jogo.board)
+            cls()            
+
+            linha = 1
+            for square in chess.SQUARE_NAMES:
+                num = chess.parse_square(square)
+                print(f"{BACKGROUND[num % 2, linha % 2]}{acharPeca(num)}", Style.RESET_ALL, end='', flush=True)
+                if ((num+1) % 8 == 0):
+                    linha = linha + 1
+                    print()
+
+            #print(jogo.board.unicode())
+
+            if computador != "":                
+                print(f"\nJogada do Computador é {computador}\n") 
+
             humano = lerJogada(list(jogo.board.legal_moves))            
             jogo = jogo.jogar(humano)
 
@@ -65,8 +123,9 @@ if __name__ == "__main__":
                 break
             elif jogo.empate():
                 print("Empate!")
+                print(jogo.tipoEmpate())
                 break
-        else:    
+        else:            
             computador = melhor_jogada_agente_poda(jogo,2)
             print(f"Jogada do Computador é {computador}")
             jogo = jogo.jogar(computador.uci())
@@ -79,19 +138,19 @@ if __name__ == "__main__":
                 break
             elif jogo.empate():
                 print("Empate!")
+                print(jogo.tipoEmpate())
                 break
-
     print(jogo.board)
 
 ##BOT X BOT
 # if __name__ == "__main__":
 #     player = int(input("0 pra preto, 1 pra branco: "))
-#     jogo = Game(chess.Board(),player)
+#     jogo = ChessGame(chess.Board(),player)
 
 #     while not jogo.board.is_game_over():
 #         if jogo.board.turn == player:
 #             print(jogo.board)
-#             IA = melhor_jogada_agente_poda(jogo,1)
+#             IA = melhor_jogada_agente_poda(jogo, 0)
 #             print(f"Jogada da IA é {IA.uci()}")
 #             jogo = jogo.jogar(IA.uci())
 #             if jogo.venceu():
@@ -99,10 +158,11 @@ if __name__ == "__main__":
 #                 break
 #             elif jogo.empate():
 #                 print("Empate!")
+#                 print(jogo.tipoEmpate())
 #                 break
 #         else:    
 #             print(jogo.board)
-#             AI = melhor_jogada_agente_poda(jogo,1)
+#             AI = melhor_jogada_agente_poda(jogo, 0)
 #             print(f"Jogada do AI é {AI.uci()}")
 #             jogo = jogo.jogar(AI.uci())
 #             if jogo.venceu():
@@ -110,7 +170,63 @@ if __name__ == "__main__":
 #                 break
 #             elif jogo.empate():
 #                 print("Empate!")
+#                 print(jogo.tipoEmpate())
 #                 break
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # if __name__ == "__main__":
@@ -133,44 +249,6 @@ if __name__ == "__main__":
 #     jogo.registrarAbertura(x)
 
 #     print(jogo.primeiras5Jogadas)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # board = chess.Board(fen="4k3/p5pp/2p5/8/8/r7/5r2/3K4 b - - 11 35")
 # ev.evaluate(board)
