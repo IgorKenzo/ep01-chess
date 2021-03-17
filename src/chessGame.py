@@ -90,57 +90,57 @@ def cls():
     os.system('cls' if os.name=='nt' else 'clear')
 
 #JOGO NORMAL
-# if __name__ == "__main__":
-#     player = int(input("0 pra preto, 1 pra branco: "))
-#     jogo = ChessGame(chess.Board(),player)
-#     computador = ""
+if __name__ == "__main__":
+    player = int(input("0 pra preto, 1 pra branco: "))
+    jogo = ChessGame(chess.Board(),player)
+    computador = ""
 
-#     while not jogo.board.is_game_over():
-#         if jogo.board.turn == player:
-#             cls()            
+    while not jogo.board.is_game_over():
+        if jogo.board.turn == player:
+            cls()            
 
-#             linha = 1
-#             for square in chess.SQUARE_NAMES:
-#                 num = chess.parse_square(square)
-#                 print(f"{BACKGROUND[num % 2, linha % 2]}{acharPeca(num)}", Style.RESET_ALL, end='', flush=True)
-#                 if ((num+1) % 8 == 0):
-#                     linha = linha + 1
-#                     print()
+            linha = 1
+            for square in chess.SQUARE_NAMES:
+                num = chess.parse_square(square)
+                print(f"{BACKGROUND[num % 2, linha % 2]}{acharPeca(num)}", Style.RESET_ALL, end='', flush=True)
+                if ((num+1) % 8 == 0):
+                    linha = linha + 1
+                    print()
 
-#             #print(jogo.board.unicode())
+            #print(jogo.board.unicode())
 
-#             if computador != "":                
-#                 print(f"\nJogada do Computador é {computador}\n") 
+            if computador != "":                
+                print(f"\nJogada do Computador é {computador}\n") 
 
-#             humano = lerJogada(list(jogo.board.legal_moves))            
-#             jogo = jogo.jogar(humano)
+            humano = lerJogada(list(jogo.board.legal_moves))            
+            jogo = jogo.jogar(humano)
 
-#             if (len(jogo.primeiras5Jogadas) < 5):
-#                 jogo.registrarAbertura(humano)
+            if (len(jogo.primeiras5Jogadas) < 5):
+                jogo.registrarAbertura(humano)
 
-#             if jogo.venceu():
-#                 print("Humano Venceu!")
-#                 break
-#             elif jogo.empate():
-#                 print("Empate!")
-#                 print(jogo.tipoEmpate())
-#                 break
-#         else:            
-#             computador = melhor_jogada_agente_poda(jogo,2)
-#             print(f"Jogada do Computador é {computador}")
-#             jogo = jogo.jogar(computador.uci())
+            if jogo.venceu():
+                print("Humano Venceu!")
+                break
+            elif jogo.empate():
+                print("Empate!")
+                print(jogo.tipoEmpate())
+                break
+        else:            
+            computador = melhor_jogada_agente_poda(jogo,2)
+            print(f"Jogada do Computador é {computador}")
+            jogo = jogo.jogar(computador.uci())
 
-#             if (len(jogo.primeiras5Jogadas) < 5):
-#                 jogo.registrarAbertura(computador.uci())
+            if (len(jogo.primeiras5Jogadas) < 5):
+                jogo.registrarAbertura(computador.uci())
             
-#             if jogo.venceu():
-#                 print("Computador venceu!")
-#                 break
-#             elif jogo.empate():
-#                 print("Empate!")
-#                 print(jogo.tipoEmpate())
-#                 break
-#     print(jogo.board)
+            if jogo.venceu():
+                print("Computador venceu!")
+                break
+            elif jogo.empate():
+                print("Empate!")
+                print(jogo.tipoEmpate())
+                break
+    print(jogo.board)
 
 ##BOT X BOT
 # if __name__ == "__main__":
@@ -229,9 +229,9 @@ def cls():
 
 
 
-if __name__ == "__main__":
-    jogo = ChessGame(chess.Board(fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/1NB1KBN1 w kq - 0 1"), True)
-    print(ev.isEndGame(jogo.board))
+# if __name__ == "__main__":
+#     jogo = ChessGame(chess.Board(fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/1NB1KBN1 w kq - 0 1"), True)
+#     print(ev.isEndGame(jogo.board))
 
 #     x = melhor_jogada_agente_poda(jogo, 0)
 #     print(x)
