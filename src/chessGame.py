@@ -8,24 +8,24 @@ from minimax import melhor_jogada_agente_poda,melhor_jogada_agente
 
 BACKGROUND = {
     (0, 0) : Back.LIGHTBLACK_EX,
-    (1, 0) : Back.LIGHTCYAN_EX,
-    (0, 1) : Back.LIGHTCYAN_EX,
+    (1, 0) : Back.BLACK,
+    (0, 1) : Back.BLACK,
     (1, 1) : Back.LIGHTBLACK_EX
 }
 
 ELEMENTS = {
-    (chess.KING, 1): f'{Fore.LIGHTWHITE_EX}\u265A',
-    (chess.QUEEN, 1): f'{Fore.LIGHTWHITE_EX}\u265B',
-    (chess.ROOK, 1): f'{Fore.LIGHTWHITE_EX}\u265C',
-    (chess.BISHOP, 1): f'{Fore.LIGHTWHITE_EX}\u265D',
-    (chess.KNIGHT, 1): f'{Fore.LIGHTWHITE_EX}\u265E',
-    (chess.PAWN, 1): f'{Fore.LIGHTWHITE_EX}\u265F',
-    (chess.KING, 0): f'{Fore.BLACK}\u265A',
-    (chess.QUEEN, 0): f'{Fore.BLACK}\u265B',
-    (chess.ROOK, 0): f'{Fore.BLACK}\u265C',
-    (chess.BISHOP, 0): f'{Fore.BLACK}\u265D',
-    (chess.KNIGHT, 0): f'{Fore.BLACK}\u265E',
-    (chess.PAWN, 0): f'{Fore.BLACK}\u265F'
+    (chess.KING, 0): f'{Fore.CYAN} \u265A',
+    (chess.QUEEN, 0): f'{Fore.CYAN} \u265B',
+    (chess.ROOK, 0): f'{Fore.CYAN} \u265C',
+    (chess.BISHOP, 0): f'{Fore.CYAN} \u265D',
+    (chess.KNIGHT, 0): f'{Fore.CYAN} \u265E',
+    (chess.PAWN, 0): f'{Fore.CYAN} \u265F',
+    (chess.KING, 1): f'{Fore.WHITE} \u265A',
+    (chess.QUEEN, 1): f'{Fore.WHITE} \u265B',
+    (chess.ROOK, 1): f'{Fore.WHITE} \u265C',
+    (chess.BISHOP, 1): f'{Fore.WHITE} \u265D',
+    (chess.KNIGHT, 1): f'{Fore.WHITE} \u265E',
+    (chess.PAWN, 1): f'{Fore.WHITE} \u265F'
 }
 
 def acharPeca(square):
@@ -33,7 +33,7 @@ def acharPeca(square):
     if peca != None:        
         return ELEMENTS[peca.piece_type, peca.color]
     else:
-        return " "
+        return "  "
 
 class ChessGame(Jogo):
     def __init__(self, board, playerColor, prim5jogadas = []):
@@ -76,12 +76,40 @@ class ChessGame(Jogo):
             return "Seventy Five moves - Muitas jogas sem captura ou movimento de peão"
         return "Empate"
 
+def sortPerPiece(legalMoves):
+    pieces = []
+    for _ in range(7):
+        pieces.append([])
+
+    for move in legalMoves:
+        square = chess.parse_square(move[:2])
+        p = jogo.board.piece_at(square)
+        pieces[p.piece_type].append(move)
+
+    for piece in range(1, 7):
+        print(f"{ev.pieceName[piece]} = {pieces[piece]}")
+
+
+def mostraTabuleiroBonitinho():
+    cls()            
+
+    colunas = ["a", "b",  "c",  "d",  "e",  "f",  "g",  "h"]
+
+    print("""   a  b  c  d  e  f  g  h """)
+    for linha in range(8,0,-1):
+        print(f"{linha} ", end='', flush=True)
+        for coluna in colunas:
+            square = chess.parse_square(coluna + linha.__str__())
+            print(f"{BACKGROUND[square % 2, linha % 2]}{acharPeca(square)}", Style.RESET_ALL, end='', flush=True)
+        print()
+
 def lerJogada(legalMovesList):
     while True:
         legalMoves = []
         for move in legalMovesList:
             legalMoves.append(move.uci())
-        print(legalMoves)
+        #print(legalMoves)
+        sortPerPiece(legalMoves)
         mov = input("\nDigite uma jogada: ")
         if mov in legalMoves:
             return mov
@@ -97,23 +125,16 @@ if __name__ == "__main__":
 
     while not jogo.board.is_game_over():
         if jogo.board.turn == player:
-            cls()            
 
-            linha = 1
-            for square in chess.SQUARE_NAMES:
-                num = chess.parse_square(square)
-                print(f"{BACKGROUND[num % 2, linha % 2]}{acharPeca(num)}", Style.RESET_ALL, end='', flush=True)
-                if ((num+1) % 8 == 0):
-                    linha = linha + 1
-                    print()
-
-            #print(jogo.board.unicode())
+            mostraTabuleiroBonitinho()
 
             if computador != "":                
                 print(f"\nJogada do Computador é {computador}\n") 
 
             humano = lerJogada(list(jogo.board.legal_moves))            
             jogo = jogo.jogar(humano)
+
+            mostraTabuleiroBonitinho()
 
             if (len(jogo.primeiras5Jogadas) < 5):
                 jogo.registrarAbertura(humano)
@@ -140,7 +161,7 @@ if __name__ == "__main__":
                 print("Empate!")
                 print(jogo.tipoEmpate())
                 break
-    print(jogo.board)
+    mostraTabuleiroBonitinho()
 
 ##BOT X BOT
 # if __name__ == "__main__":
@@ -172,12 +193,6 @@ if __name__ == "__main__":
 #                 print("Empate!")
 #                 print(jogo.tipoEmpate())
 #                 break
-
-
-
-
-
-
 
 
 
