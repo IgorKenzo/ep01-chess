@@ -29,12 +29,12 @@ pieceValue2 = {
 }
 
 pieceName = {
-    chess.PAWN : "peao",
-    chess.KNIGHT : "cav",
-    chess.BISHOP : "bispo",
-    chess.ROOK : "torre",
-    chess.QUEEN : "rain",
-    chess.KING : "rei"
+    chess.PAWN : "Pawn",
+    chess.KNIGHT : "Knight",
+    chess.BISHOP : "bishop",
+    chess.ROOK : "Rook",
+    chess.QUEEN : "Queen",
+    chess.KING : "King"
 }
 
 # Aplicando o
