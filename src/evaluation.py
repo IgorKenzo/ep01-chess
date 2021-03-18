@@ -155,7 +155,6 @@ def applyOnTable(board, piece, color, index):
         return whiteQueenTable[index] if color == chess.WHITE else blackQueenTable[index]
     if piece == chess.KING:
         if isEndGame(board):
-            print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
             return whiteKingEndGameTable[index] if color == chess.WHITE else blackKingEndGameTable[index]
         else:
             return whiteKingMidGameTable[index] if color == chess.WHITE else blackKingMidGameTable[index]

@@ -71,9 +71,9 @@ class ChessGame(Jogo):
         if(self.board.is_insufficient_material()):
             return "Insufficient Material - Material Insuficiente"
         if(self.board.is_fivefold_repetition()):
-            return "Fivefold Repetition - 5 jogadas identicas"
+            return "Fivefold Repetition - 5 jogadas idênticas"
         if(self.board.is_seventyfive_moves()):
-            return "Seventy Five moves - Muitas jogas sem captura ou movimento de peão"
+            return "Seventy Five moves - Muitas jogadas sem captura ou movimento de peão"
         return "Empate"
 
 def sortPerPiece(legalMoves):
@@ -91,8 +91,6 @@ def sortPerPiece(legalMoves):
 
 
 def mostraTabuleiroBonitinho():
-    cls()            
-
     colunas = ["a", "b",  "c",  "d",  "e",  "f",  "g",  "h"]
 
     print("""   a  b  c  d  e  f  g  h """)
@@ -134,15 +132,18 @@ if __name__ == "__main__":
             humano = lerJogada(list(jogo.board.legal_moves))            
             jogo = jogo.jogar(humano)
 
+            cls()
             mostraTabuleiroBonitinho()
 
             if (len(jogo.primeiras5Jogadas) < 5):
                 jogo.registrarAbertura(humano)
 
             if jogo.venceu():
+                cls()
                 print("Humano Venceu!")
                 break
             elif jogo.empate():
+                cls()
                 print("Empate!")
                 print(jogo.tipoEmpate())
                 break
@@ -155,9 +156,11 @@ if __name__ == "__main__":
                 jogo.registrarAbertura(computador.uci())
             
             if jogo.venceu():
+                cls()
                 print("Computador venceu!")
                 break
             elif jogo.empate():
+                cls()
                 print("Empate!")
                 print(jogo.tipoEmpate())
                 break
