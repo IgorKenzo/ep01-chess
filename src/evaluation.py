@@ -10,23 +10,6 @@ openings = ["e2e4 e7e5 g1f3 b8c6 f1c4", "d2d4 g8f6 c2c4 g7g6 f2f3", "c2c4 e7e6 b
             "g1f3 d7d5 g2g3 g8f6 f1g2", "e2e4 e7e5 g1f3 g8f6 d2d4", "d2d4 g8f6 c2c4 e7e6 g1f3", "d2d4 g8f6 c2c4 c7c5 d7d5", "e2e4 c7c5 g1f3 b8c6 d2d4",
             "g1f3 d7d5 d2d4 e7e6 g2g3", "e2e4 c7c5 g1f3 d7d6 d2d4", "e2e4 e7e5 g1f3 b8c6 f1b5", "c2c4 g8f6 b1c3 e7e6 e2e4", "e2e4 c7c6 d2d4 d7d5 e7e5"]
 
-pieceValue = {
-    chess.PAWN : 100,
-    chess.KNIGHT : 320,
-    chess.BISHOP : 330,
-    chess.ROOK : 500,
-    chess.QUEEN : 900,
-    chess.KING : 20000
-}
-
-pieceValue2 = {
-    chess.PAWN : 10,
-    chess.KNIGHT : 30,
-    chess.BISHOP : 30,
-    chess.ROOK : 50,
-    chess.QUEEN : 90,
-    chess.KING : 900
-}
 
 pieceName = {
     chess.PAWN : "Pawn",
@@ -39,6 +22,16 @@ pieceName = {
 
 # Aplicando o
 #https://www.chessprogramming.org/Simplified_Evaluation_Function
+
+pieceValue = {
+    chess.PAWN : 100,
+    chess.KNIGHT : 320,
+    chess.BISHOP : 330,
+    chess.ROOK : 500,
+    chess.QUEEN : 900,
+    chess.KING : 20000
+}
+
 # Pawn evaluation table
 whitePawnTable = [
  0,  0,  0,  0,  0,  0,  0,  0,
@@ -166,31 +159,23 @@ def evaluate(board, colorAI):
     if (board.is_checkmate()):
         txt = board.result().split("-")
         if (txt[0] == colorAI):
-            return 1000000#float("inf")
+            return 1000000
         else:
-            return -1000000#float("-inf")
+            return -100000
 
     for piece in pieceValue:
         aiPieces = board.pieces(piece, colorAI)
         testeA = 0
         for p in aiPieces:
             testeA += pieceValue[piece] + applyOnTable(board, piece, colorAI, chess.square_mirror(p))
-            #print(testeA)
         pieceSumAI += testeA
-
-
-        #print(f'Peça: {pieceName[piece]}. AI: {testeA} SOMA: {pieceSumAI}')
-        
+    
         playerPieces = board.pieces(piece, not colorAI)
         testeB = 0
         for p in playerPieces:
-            #print(-pieceValue[piece], applyOnTable(piece, not colorAI, p))
             testeB += -pieceValue[piece] + applyOnTable(board, piece, not colorAI, p)
         pieceSumPlayer += testeB
-        
-        #print(f'Peça: {pieceName[piece]}. Player: {testeB}')
 
-    #print(pieceSumAI , pieceSumPlayer)
     return pieceSumAI + pieceSumPlayer
 
 
@@ -214,27 +199,3 @@ def buscarAbertura(board):
             if control:
                 return plays[size]
     return -1
-
-
-
-
-# def evaluate2(board, colorAI):
-#     total = 0
-#     for piece in pieceValue:
-#         aiPieces = board.pieces(piece, colorAI)
-#         for p in aiPieces:
-#             valor = pieceValue2[piece]
-#             total += valor
-#         playerPieces = board.pieces(piece, not colorAI)
-#         for p in playerPieces:
-#             valor = pieceValue2[piece]
-#             total -= valor
-#     return total
-
-#And of course "These values are for white, for black I use mirrored values."
-'''
-Additionally we should define where the ending begins. For me it might be either if:
-
-Both sides have no queens or
-Every side which has a queen has additionally no other pieces or one minorpiece maximum.
-'''

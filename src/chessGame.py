@@ -3,7 +3,7 @@ import random
 import os
 import evaluation as ev
 from colorama import init, Fore, Back, Style
-from jogo import Jogo,Jogador
+from jogo import Jogo
 from minimax import melhor_jogada_agente_poda,melhor_jogada_agente
 
 BACKGROUND = {
@@ -111,6 +111,8 @@ def lerJogada(legalMovesList):
         mov = input("\nDigite uma jogada: ")
         if mov in legalMoves:
             return mov
+        else:
+            print("\n--Jogada Inválida--")
 
 def cls():
     os.system('cls' if os.name=='nt' else 'clear')
@@ -166,6 +168,7 @@ if __name__ == "__main__":
                 break
     mostraTabuleiroBonitinho()
 
+
 ##BOT X BOT
 # if __name__ == "__main__":
 #     player = int(input("0 pra preto, 1 pra branco: "))
@@ -196,130 +199,3 @@ if __name__ == "__main__":
 #                 print("Empate!")
 #                 print(jogo.tipoEmpate())
 #                 break
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# if __name__ == "__main__":
-#     jogo = ChessGame(chess.Board(fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/1NB1KBN1 w kq - 0 1"), True)
-#     print(ev.isEndGame(jogo.board))
-
-#     x = melhor_jogada_agente_poda(jogo, 0)
-#     print(x)
-#     jogo = jogo.jogar(x)
-#     jogo.registrarAbertura(x)
-
-#     humano = lerJogada(list(jogo.board.legal_moves))
-#     jogo = jogo.jogar(humano)
-#     jogo.registrarAbertura(humano)
-
-#     print(jogo.primeiras5Jogadas)
-
-#     x = melhor_jogada_agente_poda(jogo, 0)
-#     print(x)
-#     jogo = jogo.jogar(x)
-#     jogo.registrarAbertura(x)
-
-#     print(jogo.primeiras5Jogadas)
-
-# board = chess.Board(fen="4k3/p5pp/2p5/8/8/r7/5r2/3K4 b - - 11 35")
-# ev.evaluate(board)
-
-
-
-#an adjacency list
-# positions = {}
-
-# # depth-first search from a FEN string
-# def generate_tree(fen, depth):
-#     board = chess.Board(fen)
-#     legal_moves = list(board.legal_moves)
-#     if fen in positions:
-#         positions[fen] += legal_moves
-#     else:
-#         positions[fen] = legal_moves
-
-#     for move in legal_moves:
-#         board.push(move)
-#         next_fen = board.fen()
-#         board.pop()
-        
-#         if not (depth == 0):
-#             generate_tree(next_fen, depth-1)
-#         else:
-#             return
-
-# try:
-#     generate_tree(chess.STARTING_FEN, 3)
-    
-#     soma = 0
-
-#     for p in positions:
-#         soma += len(positions[p])
-        
-#     print(soma)
-# except RecursionError: 
-#     print("a")
-#     print(len(positions) + sum(len(p) for p in positions))
-
-
-# board = chess.Board()
-# legalMovesList = board.legal_moves
-# moves = []
-# print(board.result())
-# while not board.is_game_over():
-#     moves.clear()
-#     moves = list(board.legal_moves)
-
-#     board.push(random.choice(moves))
-
-# print(board)
-# print(board.result())
-# print(board.is_fivefold_repetition())
